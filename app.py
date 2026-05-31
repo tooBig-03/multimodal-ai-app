@@ -14,8 +14,8 @@ st.set_page_config(
 
 # Fetch API Keys securely from Streamlit Cloud Secrets dashboard
 try:
-    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-    HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
+    GEMINI_API_KEY = st.secrets["AQ.Ab8RN6KBX_oYLq3IqUWfLHwuxNncnPoTiyaciVpL1tFs2ceu5A"]
+    HUGGINGFACE_API_KEY = st.secrets["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"]
 except KeyError:
     st.error("🔑 API Keys missing! Please configure GEMINI_API_KEY and HUGGINGFACE_API_KEY in your Streamlit Cloud App Secrets settings.")
     st.stop()

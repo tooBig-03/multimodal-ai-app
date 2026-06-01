@@ -4,7 +4,7 @@ from huggingface_hub import InferenceClient
 import time
 
 # ==========================================
-# 1. APPLICATION CONFIGURATION & SECRETS
+# 1. APPLICATION CONFIGURATION & API KEYS
 # ==========================================
 st.set_page_config(
     page_title="Multi-Modal AI App",
@@ -12,13 +12,18 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Fetch API Keys securely from Streamlit Cloud Secrets dashboard
-try:
-    GEMINI_API_KEY = st.secrets["AQ.Ab8RN6KBX_oYLq3IqUWfLHwuxNncnPoTiyaciVpL1tFs2ceu5A"]
-    HUGGINGFACE_API_KEY = st.secrets["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"]
-except KeyError:
-    st.error("🔑 API Keys missing! Please configure GEMINI_API_KEY and HUGGINGFACE_API_KEY in your Streamlit Cloud App Secrets settings.")
-    st.stop()
+# 1. Define your active API keys directly here
+HARDCODED_GEMINI_KEY = "AQ.Ab8RN6KBX_oYLq3IqUWfLHwuxNncnPoTiyaciVpL1tFs2ceu5A"
+HARDCODED_HF_KEY = "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"
+
+# 2. Smart configuration setup to read from Secrets or fall back to hardcoded strings
+if "GEMINI_API_KEY" in st.secrets and "HUGGINGFACE_API_KEY" in st.secrets:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+    HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
+else:
+    # If secrets are missing (like in Codespaces/Local terminal), use your keys directly
+    GEMINI_API_KEY = HARDCODED_GEMINI_KEY
+    HUGGINGFACE_API_KEY = HARDCODED_HF_KEY
 
 # Initialize the Gemini SDK
 genai.configure(api_key=GEMINI_API_KEY)
@@ -99,7 +104,6 @@ with col2:
             st.warning("Please enter an image description prompt first!")
         else:
             with st.spinner("Connecting to Hugging Face and generating image... (May take 10-20s)"):
-                # Retry logic to combat temporary server connection drops
                 success = False
                 for attempt in range(3):
                     try:
